@@ -107,3 +107,40 @@ waitframe:
     mov [last_tick], ax
     pop ax
     ret
+
+; subroutine to update camera_x when mario passes screen x = 160
+updatecam:
+    push ax
+    push bx
+
+    mov ax, [mario_x]
+    mov bx, ax
+    sub bx, [camera_x]
+    cmp bx, 160
+    jle .done
+
+    sub ax, 160
+    cmp ax, MAX_CAM
+    jle .chk
+    mov ax, MAX_CAM
+.chk:
+    cmp ax, [camera_x]
+    jle .done
+    mov [camera_x], ax
+
+.done:
+    pop bx
+    pop ax
+    ret
+
+; helper to check if tile in AL is solid (1..10)
+issolid:
+    cmp al, TILE_GROUND
+    jl .no
+    cmp al, TILE_STAIR
+    jg .no
+    or al, al
+    ret
+.no:
+    cmp al, al
+    ret
