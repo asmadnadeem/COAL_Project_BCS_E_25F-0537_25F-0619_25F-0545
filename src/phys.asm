@@ -464,3 +464,4 @@ check_overlap:
     pop bx
     pop bp
     ret 4
+; verified jump cutoff and left camera wall clamping
