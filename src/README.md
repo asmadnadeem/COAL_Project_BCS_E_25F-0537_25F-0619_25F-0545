@@ -25,8 +25,17 @@
 - **Left Shift:** Run / Sprint
 - **Spacebar:** Jump
 - **P:** Pause / Resume game
+- **M:** Mute / unmute music and sound effects
 - **Enter:** Select menu option / Continue
 - **Esc:** Return to Title Screen / Exit
+
+## Audio
+
+The game uses the PC speaker and PIT channel 2 for an original, looping gameplay melody and short sound effects for jumping, coins, extra lives, enemy stomps and shell kicks, mushroom pickups, damage, death, and the flagpole. Sound runs without blocking the game loop; effects take priority over the single-voice music. The speaker is silenced while paused, at the title screen, when muted, and when exiting.
+
+Sound is on by default. Press **M** to toggle it; the title screen shows the current setting. Make sure PC speaker emulation is enabled in DOSBox (for example, `pcspeaker=true` in its `[speaker]` settings) and that the host audio is unmuted. Rebuild with the command above after changing the source.
+
+Optional automated audio checks require NASM and Python's `unicorn` package: run `python -m pip install unicorn` and then `python tests/test_audio.py` from the project root. These tests build temporary binaries and do not overwrite `MARIO.COM`.
 
 ## Memory & Video Layout
 

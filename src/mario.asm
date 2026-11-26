@@ -53,6 +53,7 @@ KEY_P           equ 0x19
 KEY_ENTER       equ 0x1c
 KEY_LSHIFT      equ 0x2a
 KEY_C           equ 0x2e
+KEY_M           equ 0x32
 KEY_SPACE       equ 0x39
 KEY_UP          equ 0x48
 KEY_LEFT        equ 0x4b
@@ -161,6 +162,8 @@ str_ltbon:      db 'TIME BONUS', 0
 str_lfinal:     db 'FINAL SCORE', 0
 str_enter:      db 'Press ENTER to continue', 0
 str_gameover:   db 'GAME OVER', 0
+str_soundon:    db 'M: SOUND ON', 0
+str_soundoff:   db 'M: SOUND OFF', 0
 
 ; enemy table: type(1=goomba,2=koopa), state(1=wait), x(dw), y(dw), dir(db), timer(db), pad(8)
 orig_enemies:
@@ -378,12 +381,14 @@ mainloop:
     mov bl, [game_state]
     shl bx, 1
     call [state_table + bx]
+    call sound_update
 
     call copybuf
     inc word [frame_num]
     jmp mainloop
 
 exit_prog:
+    call sound_stop
     call unhook_ints
     mov ax, 0x0003
     int 0x10
@@ -393,3 +398,4 @@ exit_prog:
 %include "src/gfx.asm"
 %include "src/phys.asm"
 %include "src/game.asm"
+%include "src/audio.asm"

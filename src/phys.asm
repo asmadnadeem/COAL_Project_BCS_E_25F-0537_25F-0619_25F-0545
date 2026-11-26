@@ -213,6 +213,7 @@ movemario:
     jne .var_jmp
     mov word [mario_vy], JUMP_START
     mov byte [on_ground], 0
+    call sound_jump
 
 .var_jmp:
     cmp byte [key_state + KEY_SPACE], 0
