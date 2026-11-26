@@ -552,7 +552,7 @@ drawsprite:
     push cx
     xor di, di
 .cloop:
-    mov al, [si + di]
+    mov al, [si]
     cmp al, 0
     je .skip
 
@@ -578,17 +578,17 @@ drawsprite:
     mov ax, dx
     inc ax
     push ax
-    mov al, [si + di]
+    mov al, [si]
     xor ah, ah
     push ax
     call putpixel
 
 .skip:
+    inc si
     inc di
     cmp di, 16
     jl .cloop
 
-    add si, 16
     inc dx
     test word [bp+4], 2
     jz .nextr
