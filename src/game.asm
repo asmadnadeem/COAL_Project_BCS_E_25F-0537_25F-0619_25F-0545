@@ -31,11 +31,15 @@ addcoin:
     call addscore
     inc byte [coins]
     cmp byte [coins], 100
-    jl .done
+    jl .coin_sound
     mov byte [coins], 0
     cmp byte [lives], 99
-    jge .done
+    jge .coin_sound
     inc byte [lives]
+    call sound_life
+    jmp .done
+.coin_sound:
+    call sound_coin
 .done:
     pop ax
     ret
@@ -329,6 +333,7 @@ check_items:
     push 400
 .addf:
     call addscore
+    call sound_win
     mov byte [game_state], ST_WINSEQ
     mov word [state_timer], 55
 
@@ -407,6 +412,7 @@ updatemush:
     mov byte [mush_active], 0
     push 1000
     call addscore
+    call sound_power
     cmp byte [mario_hp], 1
     jne .done
     mov byte [mario_hp], 2
@@ -454,6 +460,7 @@ hurtmario:
     mov byte [mario_form], 0
     add word [mario_y], 16
     mov byte [invuln_timer], 36
+    call sound_hurt
     ret
 .die:
     mov byte [pit_death], 0
@@ -610,6 +617,7 @@ updateenemies:
     mov byte [di + 1], 0
     push 500
     call addscore
+    call sound_stomp
 .next_s:
     add di, ENEMY_SIZE
     loop .sloop
@@ -627,6 +635,7 @@ updateenemies:
     mov byte [si + 7], 8
     push 400
     call addscore
+    call sound_stomp
     mov ax, [mario_x]
     cmp ax, [si + 2]
     jg .kickl
@@ -651,6 +660,7 @@ updateenemies:
     jg .side
 
     call stomp_pts
+    call sound_stomp
     mov word [mario_vy], STOMP_BOUNCE
     cmp byte [key_state + KEY_SPACE], 1
     jne .set_st
@@ -838,6 +848,7 @@ newgame:
 
 ; subroutine to trigger dying state
 start_death:
+    call sound_death
     mov byte [game_state], ST_DIE
     mov word [state_timer], 28
     mov byte [mario_pose], 2
@@ -907,6 +918,18 @@ state_title:
 .darr:
     push str_arrow
     push COL_YELLOW
+    call printstr
+
+    push 112
+    push 136
+    cmp byte [sound_muted], 0
+    jne .soundoff
+    push str_soundon
+    jmp .soundlabel
+.soundoff:
+    push str_soundoff
+.soundlabel:
+    push COL_LGREEN
     call printstr
 
     push 48
